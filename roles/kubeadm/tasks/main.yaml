@@ -1,0 +1,3 @@
+- name: "main :: #Jameson Abade# Incluindo as tasks de união"
+  ansible.builtin.include_tasks:
+    file: "join.yaml"

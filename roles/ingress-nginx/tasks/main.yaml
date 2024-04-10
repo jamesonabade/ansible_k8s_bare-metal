@@ -1,0 +1,3 @@
+- name: "main :: #Jameson Abade# incluindo as tasks de instalação"
+  ansible.builtin.include_tasks:
+    file: "install.yaml"

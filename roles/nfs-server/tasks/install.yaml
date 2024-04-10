@@ -1,0 +1,18 @@
+- name: "install :: #Jameson Abade# Atualizando a lista de repositórios"
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+    force_apt_get: true
+
+- name: "install :: #Jameson Abade# Atualizando a lista de repositórios"
+  become: true
+  ansible.builtin.apt:
+    upgrade: full
+    force_apt_get: true
+
+- name: "install :: #Jameson Abade# instalando nfs-kernel-server"
+  become: true
+  ansible.builtin.apt:
+    pkg:
+      - nfs-kernel-server
+    force_apt_get: true

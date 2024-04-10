@@ -1,0 +1,2 @@
+- name: "deploy :: #Jameson Abade# aplicando os manifestos Calico em todos os nós"
+  ansible.builtin.shell: "kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/{{ calico.version }}/manifests/calico.yaml"

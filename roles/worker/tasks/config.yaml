@@ -1,0 +1,7 @@
+- name: "config :: #Jameson Abade# A porta TCP 6443 do nó master pode ser acessada pelo worker"
+  become: true
+  ansible.builtin.wait_for: "host={{ hostvars[groups['masters'][0]].ansible_host }} port=6443 timeout=1"
+
+- name: "config :: #Jameson Abade# unindo os workers ao cluster"
+  become: true
+  ansible.builtin.shell: "{{ hostvars[groups['masters'][0]].join_command }}"

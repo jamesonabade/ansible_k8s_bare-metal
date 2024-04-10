@@ -1,0 +1,37 @@
+- name: "config :: #Jameson Abade# destivando o system swap"
+  become: true
+  ansible.builtin.shell: "swapoff -a"
+
+- name: "config :: #Jameson Abade# removendo a config swaps do filesystem evintando ativar no boot"
+  become: true
+  ansible.builtin.lineinfile:
+    path: "/etc/fstab"
+    regexp: '(?i)^([^#][\S]+\s+(none|swap)\s+swap.*)'
+    line: '# \1'
+    backrefs: true
+    state: present
+
+- name: "config :: #Jameson Abade# garantindo que br_netfilter esteja habilitado"
+  become: true
+  community.general.modprobe:
+    name: "br_netfilter"
+    state: present
+
+- name: "config :: #Jameson Abade# garantindo que o overlay fique ativado"
+  become: true
+  community.general.modprobe:
+    name: "overlay"
+    state: present
+
+- name: "config :: #Jameson Abade# definindo as regras de rede necessárias"
+  become: true
+  ansible.builtin.sysctl:
+    name: "{{ item }}"
+    value: "1"
+    state: present
+    reload: true
+  loop:
+    - "net.bridge.bridge-nf-call-iptables"
+    - "net.bridge.bridge-nf-call-ip6tables"
+    - "net.ipv4.ip_forward"
+    

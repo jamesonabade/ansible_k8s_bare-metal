@@ -1,0 +1,25 @@
+- name: "join :: #Jameson Abade# criando o comando join kubeadm"
+  become: true
+  ansible.builtin.shell: kubeadm token create --print-join-command
+  register: join_command_raw
+
+- name: "join :: definindo o comando join"
+  ansible.builtin.set_fact:
+    join_command: "{{ join_command_raw.stdout_lines[0] }}"
+
+- name: "Generate certificate and extract key"
+  ansible.builtin.shell: "kubeadm init phase upload-certs --upload-certs >> {{ ansible_env.HOME }}/resultado.txt && sed -n '3p' {{ ansible_env.HOME }}/resultado.txt"
+  register: key_command_raw
+  changed_when: false  # Indica que essa tarefa não altera o estado do sistema
+  become: yes
+
+- name: "Extract key from output"
+  ansible.builtin.set_fact:
+    key_command: "{{ key_command_raw.stdout }}"
+  when: key_command_raw.stdout is defined
+
+- name: "Remove temporary file"
+  ansible.builtin.file:
+    path: /home/{{ ansible_user }}/resultado.txt
+    state: absent
+  when: key_command_raw.stdout is defined

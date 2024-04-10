@@ -1,0 +1,26 @@
+kubernetes:
+  config: "/home/{{ ansible_user }}/.kube"
+  CIDR: "172.20.0.0/16" #Endereçamento que os serviços vão subir dentro do cluster. 
+  CIDR-svc: "172.19.0.0/16" #Rede que os pods vão utilizar para se comunicarem se não for configurado será usado o padrão "10.244.0.0/16".
+  CERTSANS: "IP" #Deve ser colocado o ip do keepalived para validar também o certificado junto com o host.
+  ENDPOINT: "sigkeepalived-dev.uesb.br" #Host do keepalived que será configurado no init como endpoit.
+
+calico:
+  version: "v3.26.4"
+
+metallb:
+  addresses: IP/32 # 10.0.8.99 /IP que será atribuído ao service NGINX ingress-control
+  version: "v0.13.12"
+
+ingress_nginx:
+  version: "v1.9.4"
+  provider: "cloud"
+
+cert_manager:
+  version: "v1.13.3"
+
+letsencrypt:
+  email: jamesonabade@gmail.com
+
+nfs:
+  whitelist_ips: "10.0.8.0/24" # Permite acesso aos ip do servidor NFS

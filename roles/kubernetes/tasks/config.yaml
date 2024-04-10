@@ -1,0 +1,17 @@
+- name: "config :: #Jameson Abade# habilitando o serviço Kubelet"
+  become: true
+  ansible.builtin.service:
+    name: kubelet
+    enabled: yes
+  
+- name: "config :: #Jameson Abade# Fixando o pacote kubelet na versão atual"
+  become: true
+  ansible.builtin.dpkg_selections:
+    name: 'kubelet'
+    selection: hold
+
+- name: "config :: #Jameson Abade# Fixando o pacote kubeadm na versão atual"
+  become: true
+  ansible.builtin.dpkg_selections:
+    name: 'kubeadm'
+    selection: hold

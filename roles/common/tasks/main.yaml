@@ -1,0 +1,8 @@
+
+- name: "common :: #Jameson Abade# incluindo as tasks de configuração"
+  ansible.builtin.include_tasks:
+    file: "config.yaml"
+
+- name: "common :: #Jameson Abade# incluindo as tasks de instalação"
+  ansible.builtin.include_tasks:
+    file: "install.yaml"

@@ -1,0 +1,7 @@
+- name: "nfs-server :: #Jameson Abade# incluindo as tasks de instalação"
+  ansible.builtin.include_tasks:
+    file: "install.yaml"
+
+- name: "nfs-server :: #Jameson Abade# incluindo as tasks de instalação"
+  ansible.builtin.include_tasks:
+    file: "config.yaml"

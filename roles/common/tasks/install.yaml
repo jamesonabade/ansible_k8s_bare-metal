@@ -1,0 +1,25 @@
+- name: "install :: #Jameson Abade# Atualizando a lista de repositórios"
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+    force_apt_get: true
+
+- name: "install :: #Jameson Abade# Atualizando a lista de repositórios"
+  become: true
+  ansible.builtin.apt:
+    upgrade: full
+    force_apt_get: true
+
+- name: "install :: #Jameson Abade# instalando os pacotes Linux necessários"
+  become: true
+  ansible.builtin.apt:
+    pkg:
+      - apt-transport-https
+      - curl
+      - gnupg2
+      - software-properties-common
+      - ca-certificates
+      - apt-utils
+      - nfs-common
+      - ufw
+    force_apt_get: true

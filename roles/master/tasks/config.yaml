@@ -1,0 +1,54 @@
+- name: "config :: #Jameson Abade# Listando arquivos e diretórios existentes"
+  become: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /etc/kubernetes/manifests/kube-apiserver.yaml
+    - /etc/kubernetes/manifests/kube-controller-manager.yaml
+    - /etc/kubernetes/manifests/kube-scheduler.yaml
+    - /etc/kubernetes/manifests/etcd.yaml
+    - /var/lib/etcd
+
+- name: "config :: #Jameson Abade# Inicializando o cluster"
+  become: true
+  ansible.builtin.shell: |
+    kubeadm init --control-plane-endpoint "{{ kubernetes.ENDPOINT }}:6443" \
+                 --upload-certs \
+                 --node-name `hostname -s` \
+                 --pod-network-cidr={{ kubernetes.CIDR }} \
+                 --apiserver-cert-extra-sans={{ kubernetes.CERTSANS }} \
+                 --apiserver-advertise-address={{ kubernetes.CERTSANS }}
+  register: init
+
+- name: "config :: #Jameson Abade# Configurando o kubectl"
+  become: true
+  ansible.builtin.shell: |
+    mkdir -p $HOME/.kube && sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config && sudo chown $(id -u):$(id -g) $HOME/.kube/config
+  register: setup_kubeconfig
+
+- name: "config :: #Jameson Abade# Criando diretório Raíz"
+  ansible.builtin.file:
+    path: "{{ kubernetes.config }}"
+    state: directory
+
+- name: "config :: #Jameson Abade# Copiando o arquivo de configuração para o diretorio home"
+  become: true
+  ansible.builtin.copy:
+    src: "/etc/kubernetes/admin.conf"
+    dest: "{{ kubernetes.config }}/config"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0755"
+    remote_src: true
+
+- name: "config :: #Jameson Abade# copiando o arquivo de configuração para a máquina local"
+  become: true
+  ansible.builtin.fetch:
+    src: "/etc/kubernetes/admin.conf"
+    dest: "{{ lookup('env', 'HOME') }}/.kube/config"
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "{{ lookup('env', 'USER') }}"
+    mode: "0755"
+    flat: true
+  run_once: true

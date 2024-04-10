@@ -1,0 +1,118 @@
+# Descrição: Um playbook do Ansible para a provisionamento de um novo cluster Kubernetes.
+# Comando: ansible-playbook -i inventory/hosts.ini -K --ask-vault-pass --start-at-task="TASK" playbooks/cluster.yaml
+
+- name: "Provisionamento: configuração common da instalação"
+  hosts: masters:masters2:workers
+  gather_facts: true
+
+  tasks:
+    - name: "Iniciando as roles common"
+      ansible.builtin.include_role:
+        name: "common"
+
+- name: "Provisionamento: instalação de um novo cluster Kubernetes"
+  hosts: masters:masters2:workers
+  gather_facts: true
+
+  tasks:
+    - name: "Iniciando as roles do ContainerD"
+      ansible.builtin.include_role:
+        name: "containerd"
+
+    - name: "Iniciando as roles do Kubernetes"
+      ansible.builtin.include_role:
+        name: "kubernetes"
+- name: "Provisionamento: configuração do control-plane Kubernetes"
+  hosts: masters
+  gather_facts: true
+  vars_files:
+    - "{{ playbook_dir }}/../defaults/main.yaml"
+
+
+  tasks:
+    - name: "Iniciando as roles de Master"
+      ansible.builtin.include_role:
+        name: "master"
+    - name: "Iniciando as roles do kubeadm"
+      ansible.builtin.include_role:
+        name: "kubeadm"
+
+- name: "Provisionamento: configuração de outro control-plane Kubernetes"
+  hosts: masters2
+  gather_facts: true
+  vars_files:
+    - "{{ playbook_dir }}/../defaults/main.yaml"
+
+  tasks:
+    - name: "Iniciando as roles de Master2"
+      ansible.builtin.include_role:
+        name: "master2"
+
+- name: "Provisionamento: configuração de um novo worker Kubernetes"
+  hosts: workers
+  gather_facts: true
+  vars_files:
+    - "{{ playbook_dir }}/../defaults/main.yaml"
+
+  tasks:
+    - name: "Iniciando as roles de worker"
+      ansible.builtin.include_role:
+        name: "worker"
+
+- name: "Provisionamento: implantação do Calico em um novo cluster Kubernetes"
+  hosts: masters
+  gather_facts: true
+  vars_files:
+    - "{{ playbook_dir }}/../defaults/main.yaml"
+
+  tasks:
+    - name: "Iniciando as roles do Calico"
+      ansible.builtin.include_role:
+        name: "calico"
+
+- name: "Provisionamento: implantação do cert-manager.io em um novo cluster Kubernetes"
+  hosts: masters
+  gather_facts: true
+  vars_files:
+    - "{{ playbook_dir }}/../defaults/main.yaml"
+
+  tasks:
+    - name: "Iniciando as roles do cert-manager.io"
+      ansible.builtin.include_role:
+        name: "cert-manager"
+
+# # - name: "Provisionamento: implantação do armazenamento NFS em um novo cluster Kubernetes"
+# #   hosts: nfs-servers
+# #   gather_facts: true
+# #   vars_files:
+# #     - "{{ playbook_dir }}/../defaults/main.yaml"
+
+# #   tasks:
+# #     - name: "Iniciando as roles de Armazenamento NFS"
+# #       ansible.builtin.include_role:
+# #         name: "nfs-server"
+
+- name: "Provisionamento: implantação do MetalLB em um novo cluster Kubernetes"
+  hosts: masters
+  gather_facts: true
+  vars_files:
+    - "{{ playbook_dir }}/../defaults/main.yaml"
+
+  tasks:
+    - name: "Iniciando as roles do MetalLB"
+      ansible.builtin.include_role:
+        name: "metallb"
+
+- name: "Provisionamento: implantação do controlador Ingress Nginx em um novo cluster Kubernetes"
+  hosts: masters
+  gather_facts: true
+  vars_files:
+    - "{{ playbook_dir }}/../defaults/main.yaml"
+
+  tasks:
+    - name: "Iniciando as roles do Ingress Nginx"
+      ansible.builtin.include_role:
+        name: "ingress-nginx"
+
+
+
