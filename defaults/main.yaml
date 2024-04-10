@@ -1,7 +1,7 @@
 kubernetes:
   config: "/home/{{ ansible_user }}/.kube"
   CIDR: "172.20.0.0/16" #Endereçamento que os serviços vão subir dentro do cluster. 
-  CIDR-svc: "172.19.0.0/16" #Rede que os pods vão utilizar para se comunicarem se não for configurado será usado o padrão "10.244.0.0/16".
+  CIDR-svc: "172.19.0.0/16" #Endereçamento que os pods vão utilizar para se comunicarem se não for configurado será usado o padrão "10.244.0.0/16".
   CERTSANS: "IP" #Deve ser colocado o ip do keepalived para validar também o certificado junto com o host.
   ENDPOINT: "sigkeepalived-dev.uesb.br" #Host do keepalived que será configurado no init como endpoit.
 
