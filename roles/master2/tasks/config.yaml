@@ -1,3 +1,8 @@
+- name: "config :: #Jameson Abade# reiniciando Keepalived"
+  become: true
+  ansible.builtin.shell: |
+    systemctl restart keepalived
+
 - name: "config :: #Jameson Abade# A porta TCP 6443 do nó master pode ser acessada pelo worker"
   become: true
   ansible.builtin.wait_for: "host={{ hostvars[groups['masters'][0]].ansible_host }} port=6443 timeout=1"

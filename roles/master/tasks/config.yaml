@@ -10,6 +10,12 @@
     - /etc/kubernetes/manifests/etcd.yaml
     - /var/lib/etcd
 
+
+- name: "config :: #Jameson Abade# reiniciando Keepalived"
+  become: true
+  ansible.builtin.shell: |
+    systemctl restart keepalived
+
 - name: "config :: #Jameson Abade# Inicializando o cluster"
   become: true
   ansible.builtin.shell: |
@@ -52,3 +58,8 @@
     mode: "0755"
     flat: true
   run_once: true
+
+- name: "config :: #Jameson Abade# reiniciando Keepalived"
+  become: true
+  ansible.builtin.shell: |
+    systemctl restart keepalived
